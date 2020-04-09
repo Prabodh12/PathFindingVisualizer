@@ -16,10 +16,21 @@
       </div>
     </div>
     <nav class="navbar navbar-dark bg-dark">
-      <div style="height: 100%;">
+      <div>
         <h1><span class="badge badge-secondary">OPTIONS</span></h1>
       </div>
-      
+      <button id="Wall" class="navbar-toggler" type="button" data-toggle="collapse"
+        data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
+        aria-label="Toggle navigation" (click)="selectwall()">
+        Wall
+      </button>
+
+      <button id="Weight" class="navbar-toggler" type="button" data-toggle="collapse"
+        data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
+        aria-label="Toggle navigation" (click)="selectweight()">
+        Water
+      </button>
+
       <button id="Start" class="navbar-toggler" type="button" data-toggle="collapse"
         data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
         aria-label="Toggle navigation" (click)="selectstart()">
@@ -31,23 +42,10 @@
         End Point
       </button>
 
-      
       <button id="Clear" class="navbar-toggler" type="button" data-toggle="collapse"
         data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
         aria-label="Toggle navigation" (click)="clear()">
         Clear
-      </button>
-
-      <button id="Wall" class="navbar-toggler" type="button" data-toggle="collapse"
-        data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
-        aria-label="Toggle navigation" (click)="selectwall()">
-        Wall
-      </button>
-
-      <button id="Weight" class="navbar-toggler" type="button" data-toggle="collapse"
-        data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
-        aria-label="Toggle navigation" (click)="selectweight()">
-        Water
       </button>
     </nav>
     <nav class="navbar navbar-dark bg-dark">

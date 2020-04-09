@@ -25,18 +25,31 @@ export class AppComponent {
   mousedown = false;
   row = 0;
   col = 0;
-
+  speed = 0;
   ngOnInit() {
     if (window.matchMedia("(max-width: 480px)").matches) {
-      this.row = 13;
-      this.col = 12;
-      //this.speed=4;
+      this.row = 14;
+      this.col = 14;
+      this.speed = 30;
     } else {
       this.row = 25;
       this.col = 60;
-      //this.speed=3;
+      this.speed = 20;
     }
     this.render()
+    Swal.fire({
+      title: "We can't pass through wall.\nWe require more time through water(It costs us 15 points).\nWe can go up,right,down,left only.\nDFS and BFS are unweighted path finding Algo. i.e Water doesn't matter to this Algo.\nEnjoy Searching😃",
+      width: 600,
+      padding: '3em',
+      background: '#fff url(/images/trees.png)',
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `
+    })
+    
   }
 
   render() {
@@ -191,7 +204,7 @@ export class AppComponent {
     }
     var start = [parseInt(temp[1]), parseInt(temp[3])]
     var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
-    const response = Astar(25, 60, start, finish, this.wall, this.weight)
+    const response = Astar(this.row, this.col, start, finish, this.wall, this.weight)
     const animations = response[0];
     const path = response[1];
     var flag = 0;
@@ -243,7 +256,7 @@ export class AppComponent {
     }
     var start = [parseInt(temp[1]), parseInt(temp[3])]
     var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
-    const response = DijsktrasSearch(25, 60, start, finish, this.wall, this.weight)
+    const response = DijsktrasSearch(this.row, this.col, start, finish, this.wall, this.weight)
     const animations = response[0];
     const path = response[1];
     var flag = 0;
@@ -255,7 +268,7 @@ export class AppComponent {
         const el = document.getElementById(s).style;
         setTimeout(() => {
           el.backgroundColor = "#b03060";
-        }, i * 10);
+        }, i * this.speed);
       } else {
         if (i - animations.length > 0) {
           flag = 1;
@@ -265,7 +278,7 @@ export class AppComponent {
           const el = document.getElementById(s).style;
           setTimeout(() => {
             el.backgroundColor = "yellow";
-          }, i * 10);
+          }, i * this.speed);
         }
       }
     }
@@ -277,7 +290,7 @@ export class AppComponent {
           text: '',
           footer: ''
         })
-      }, i * 10);
+      }, i * this.speed);
     }
   }
 
@@ -299,7 +312,7 @@ export class AppComponent {
     }
     var start = [parseInt(temp[1]), parseInt(temp[3])]
     var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
-    const response = DFSSearch(25, 60, start, finish, this.wall)
+    const response = DFSSearch(this.row, this.col, start, finish, this.wall)
     const animations = response[0];
     const path = response[1];
     var flag = 0;
@@ -311,7 +324,7 @@ export class AppComponent {
         const el = document.getElementById(s).style;
         setTimeout(() => {
           el.backgroundColor = "#b03060";
-        }, i * 10);
+        }, i * this.speed);
       } else {
         if (i - animations.length > 0) {
           flag = 1;
@@ -321,7 +334,7 @@ export class AppComponent {
           const el = document.getElementById(s).style;
           setTimeout(() => {
             el.backgroundColor = "yellow";
-          }, i * 10);
+          }, i * this.speed);
         }
       }
     }
@@ -333,22 +346,24 @@ export class AppComponent {
           text: '',
           footer: ''
         })
-      }, i * 10);
+      }, i * this.speed);
+    } else {
+      setTimeout(() => {
+        Swal.fire({
+          title: "Don't laugh at me😂\nPath is absolutely correct\nDFS doesn't always give optimal path.",
+          width: 600,
+          padding: '3em',
+          background: '#fff url(/images/trees.png)',
+          backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/nyan-cat.gif")
+            left top
+            no-repeat
+          `
+        })
+      }, i * this.speed);
     }
-    setTimeout(() => {
-      Swal.fire({
-        title: "Don't laugh at me😂\nPath is absolutely correct\nDFS doesn't always give optimal path.",
-        width: 600,
-        padding: '3em',
-        background: '#fff url(/images/trees.png)',
-        backdrop: `
-          rgba(0,0,123,0.4)
-          url("/images/nyan-cat.gif")
-          left top
-          no-repeat
-        `
-      })
-    }, i * 10);
+
   }
 
   BFS() {
@@ -369,10 +384,9 @@ export class AppComponent {
     }
     var start = [parseInt(temp[1]), parseInt(temp[3])]
     var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
-    const response = BFSSearch(25, 60, start, finish, this.wall)
+    const response = BFSSearch(this.row, this.col, start, finish, this.wall)
     const animations = response[0];
     const path = response[1];
-    console.log(animations)
     var flag = 0;
     for (var i = 1; i < animations.length + path.length - 1; i++) {
       if (i < animations.length - 1) {
@@ -382,7 +396,7 @@ export class AppComponent {
         const el = document.getElementById(s).style;
         setTimeout(() => {
           el.backgroundColor = "#b03060";
-        }, i * 10);
+        }, i * this.speed);
       } else {
         if (i - animations.length > 0) {
           flag = 1;
@@ -392,7 +406,7 @@ export class AppComponent {
           const el = document.getElementById(s).style;
           setTimeout(() => {
             el.backgroundColor = "yellow";
-          }, i * 10);
+          }, i * this.speed);
         }
       }
     }
@@ -404,7 +418,7 @@ export class AppComponent {
           text: '',
           footer: ''
         })
-      }, i * 10);
+      }, i * this.speed);
     }
   }
 }

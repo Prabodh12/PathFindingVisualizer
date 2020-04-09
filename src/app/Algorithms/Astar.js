@@ -30,14 +30,15 @@ function ASTAR(row, column, node, visited, finish, animation, path, dist, w, Adi
         // console.log("QUEUE:",q
         var idx = minDist(dist,s)
         node = s.splice(idx,1)[0]
+        if (node === undefined) {
+            break
+        }
         if(!(node.toString() in w)){
             animation.push(node);
         }
         
         //console.log(visited)
-        if (node == undefined) {
-            break
-        }
+        
        // while (q.length) {
         if (visited[node[0]][node[1]] == 0) {
             if (node[0] + 1 >= 0 && node[0] + 1 < row && visited[node[0] + 1][node[1]] == 0) {

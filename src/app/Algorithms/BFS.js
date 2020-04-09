@@ -12,9 +12,9 @@ function BFS(row, column, node, visited, finish, animation, path, dist) {
         [node[0], node[1]]
     ];
     
-    console.log(node,finish)
+    //console.log(node,finish)
     while (!isEqual(finish, node)) {
-        console.log("QUEUE:",q)
+        //console.log("QUEUE:",q)
         node = q.shift()
         
         //console.log(visited)
