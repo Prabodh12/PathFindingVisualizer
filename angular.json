@@ -26,7 +26,12 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/app/Algorithms/DFS.js",
+              "src/app/Algorithms/BFS.js",
+              "src/app/Algorithms/Dijsktras.js",
+              "src/app/Algorithms/Astar.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -119,6 +124,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pathFinding"
+    }
+  },
+  "defaultProject": "pathFinding",
+  "cli": {
+    "analytics": false
+  }
 }

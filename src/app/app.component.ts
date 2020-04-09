@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
-
+import {
+  Component
+} from '@angular/core';
+import Swal from 'sweetalert2';
+declare const BFSSearch: any;
+declare const DFSSearch: any;
+declare const DijsktrasSearch: any;
+declare const Astar: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,4 +13,363 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'pathFinding';
+  arr = []
+  start = ""
+  finish = ""
+  wall = [];
+  weight = [];
+  startButton = false;
+  finishButton = false;
+  wallButton = false;
+  weightButton = false;
+  mousedown = false;
+  row = 0;
+  col = 0;
+
+  ngOnInit() {
+    if (window.matchMedia("(max-width: 480px)").matches) {
+      this.row = 13;
+      this.col = 13;
+      //this.speed=4;
+    } else {
+      this.row = 25;
+      this.col = 60;
+      //this.speed=3;
+    }
+    this.render()
+  }
+
+  render() {
+    for (var i = 0; i < this.row; i++) {
+      for (var j = 0; j < this.col; j++) {
+        this.arr.push("i=" + i.toString() + "j=" + j.toString())
+      }
+    }
+  }
+
+  clear() {
+    this.start = ""
+    this.finish = ""
+    this.wall = [];
+    this.weight = [];
+    this.startButton = false;
+    this.finishButton = false;
+    this.wallButton = false;
+    this.weightButton
+    this.mousedown = false;
+    for (var i = 0; i < this.row; i++) {
+      for (var j = 0; j < this.col; j++) {
+        document.getElementById("i=" + i.toString() + "j=" + j.toString()).style.backgroundColor = "white"
+      }
+    }
+  }
+  selectstart() {
+    this.startButton = true
+    this.finishButton = false
+    this.wallButton = false
+    this.weightButton = false
+  }
+  selectfinish() {
+    this.finishButton = true
+    this.startButton = false
+    this.wallButton = false
+    this.weightButton = false
+  }
+  selectwall() {
+    this.wallButton = true
+    this.finishButton = false
+    this.startButton = false
+    this.weightButton = false
+  }
+
+  selectweight() {
+    this.weightButton = true
+    this.finishButton = false
+    this.startButton = false
+    this.wallButton = false
+  }
+
+  mouseDown() {
+    this.mousedown = true
+  }
+  mouse(obj) {
+    if (this.mousedown && this.wallButton) {
+      document.getElementById(obj.target.id).style.backgroundColor = "black"
+      this.wall.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+    } else if (this.mousedown && this.weightButton) {
+      document.getElementById(obj.target.id).style.backgroundColor = "#80c5de"
+      this.weight.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+    }
+
+  }
+  mouseUP() {
+    this.mousedown = false
+  }
+  toggle(obj) {
+    function isEqual(finish, node) {
+      for (var i = 0; i < finish.length; i++) {
+        if (finish[i] != node[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    if (this.startButton) {
+      if (this.start != "") {
+        document.getElementById(this.start).style.backgroundColor = "white"
+      }
+      this.start = obj.target.id;
+      for (var i = 0; i < this.wall.length; i++) {
+        if (isEqual(this.wall[i], [parseInt(this.start.split(/([0-9]+)/)[1]), parseInt(this.start.split(/([0-9]+)/)[3])])) {
+          this.wall.splice(i, 1)
+        }
+      }
+
+      document.getElementById(this.start).style.backgroundColor = "#006400"
+    } else if (this.finishButton) {
+      if (this.finish != "") {
+        document.getElementById(this.finish).style.backgroundColor = "white"
+      }
+      this.finish = obj.target.id;
+      for (var i = 0; i < this.wall.length; i++) {
+        if (isEqual(this.wall[i], [parseInt(this.finish.split(/([0-9]+)/)[1]), parseInt(this.finish.split(/([0-9]+)/)[3])])) {
+          this.wall.splice(i, 1)
+        }
+      }
+      document.getElementById(this.finish).style.backgroundColor = "red"
+    } else if (this.wallButton) {
+      if (this.start != obj.target.id && this.finish != obj.target.id) {
+        document.getElementById(obj.target.id).style.backgroundColor = "black"
+        this.wall.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+      }
+    } else if (this.weightButton) {
+      if (this.start != obj.target.id && this.finish != obj.target.id) {
+        document.getElementById(obj.target.id).style.backgroundColor = "#80c5de"
+        this.weight.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+      }
+    }
+  }
+
+  AStar() {
+    var temp = (this.start.split(/([0-9]+)/))
+    var temp2 = this.finish.split(/([0-9]+)/)
+    if (temp.length == 1 || temp2.length == 1) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...\nSelect Start and End!',
+        text: '',
+        footer: ''
+      })
+      return
+    }
+    var start = [parseInt(temp[1]), parseInt(temp[3])]
+    var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
+    const response = Astar(25, 60, start, finish, this.wall, this.weight)
+    const animations = response[0];
+    const path = response[1];
+    var flag = 0;
+    for (var i = 1; i < animations.length + path.length - 1; i++) {
+      if (i < animations.length - 1) {
+        const x = animations[i][0];
+        const y = animations[i][1];
+        const s = "i=" + x.toString() + "j=" + y.toString();
+        const el = document.getElementById(s).style;
+        setTimeout(() => {
+          el.backgroundColor = "#b03060";
+        }, i * 10);
+      } else {
+        if (i - animations.length > 0) {
+          flag = 1;
+          const x = path[i - animations.length][0];
+          const y = path[i - animations.length][1];
+          const s = "i=" + x.toString() + "j=" + y.toString();
+          const el = document.getElementById(s).style;
+          setTimeout(() => {
+            el.backgroundColor = "#ff4500";
+          }, i * 10);
+        }
+      }
+    }
+    if (flag == 0) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Path Found',
+          text: '',
+          footer: ''
+        })
+      }, i * 10);
+    }
+  }
+
+  Dijsktra() {
+    var temp = (this.start.split(/([0-9]+)/))
+    var temp2 = this.finish.split(/([0-9]+)/)
+    if (temp.length == 1 || temp2.length == 1) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...\nSelect Start and End!',
+        text: '',
+        footer: ''
+      })
+      return
+    }
+    var start = [parseInt(temp[1]), parseInt(temp[3])]
+    var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
+    const response = DijsktrasSearch(25, 60, start, finish, this.wall, this.weight)
+    const animations = response[0];
+    const path = response[1];
+    var flag = 0;
+    for (var i = 1; i < animations.length + path.length - 1; i++) {
+      if (i < animations.length - 1) {
+        const x = animations[i][0];
+        const y = animations[i][1];
+        const s = "i=" + x.toString() + "j=" + y.toString();
+        const el = document.getElementById(s).style;
+        setTimeout(() => {
+          el.backgroundColor = "#b03060";
+        }, i * 10);
+      } else {
+        if (i - animations.length > 0) {
+          flag = 1;
+          const x = path[i - animations.length][0];
+          const y = path[i - animations.length][1];
+          const s = "i=" + x.toString() + "j=" + y.toString();
+          const el = document.getElementById(s).style;
+          setTimeout(() => {
+            el.backgroundColor = "#ff4500";
+          }, i * 10);
+        }
+      }
+    }
+    if (flag == 0) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Path Found',
+          text: '',
+          footer: ''
+        })
+      }, i * 10);
+    }
+  }
+
+  DFS() {
+    var temp = (this.start.split(/([0-9]+)/))
+    var temp2 = this.finish.split(/([0-9]+)/)
+    if (temp.length == 1 || temp2.length == 1) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...\nSelect Start and End!',
+        text: '',
+        footer: ''
+      })
+      return
+    }
+    var start = [parseInt(temp[1]), parseInt(temp[3])]
+    var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
+    const response = DFSSearch(25, 60, start, finish, this.wall)
+    const animations = response[0];
+    const path = response[1];
+    var flag = 0;
+    for (var i = 1; i < animations.length + path.length - 1; i++) {
+      if (i < animations.length - 1) {
+        const x = animations[i][0];
+        const y = animations[i][1];
+        const s = "i=" + x.toString() + "j=" + y.toString();
+        const el = document.getElementById(s).style;
+        setTimeout(() => {
+          el.backgroundColor = "#b03060";
+        }, i * 10);
+      } else {
+        if (i - animations.length > 0) {
+          flag = 1;
+          const x = path[i - animations.length][0];
+          const y = path[i - animations.length][1];
+          const s = "i=" + x.toString() + "j=" + y.toString();
+          const el = document.getElementById(s).style;
+          setTimeout(() => {
+            el.backgroundColor = "#ff4500";
+          }, i * 10);
+        }
+      }
+    }
+    if (flag == 0) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Path Found',
+          text: '',
+          footer: ''
+        })
+      }, i * 10);
+    }
+    setTimeout(() => {
+      Swal.fire({
+        title: "Don't laugh at me😂\nPath is absolutely correct\nDFS doesn't always give optimal path.",
+        width: 600,
+        padding: '3em',
+        background: '#fff url(/images/trees.png)',
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }, i * 10);
+  }
+
+  BFS() {
+    var temp = (this.start.split(/([0-9]+)/))
+    var temp2 = this.finish.split(/([0-9]+)/)
+    if (temp.length == 1 || temp2.length == 1) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...\nSelect Start and End!',
+        text: '',
+        footer: ''
+      })
+      return
+    }
+    var start = [parseInt(temp[1]), parseInt(temp[3])]
+    var finish = [parseInt(temp2[1]), parseInt(temp2[3])]
+    const response = BFSSearch(25, 60, start, finish, this.wall)
+    const animations = response[0];
+    const path = response[1];
+    console.log(animations)
+    var flag = 0;
+    for (var i = 1; i < animations.length + path.length - 1; i++) {
+      if (i < animations.length - 1) {
+        const x = animations[i][0];
+        const y = animations[i][1];
+        const s = "i=" + x.toString() + "j=" + y.toString();
+        const el = document.getElementById(s).style;
+        setTimeout(() => {
+          el.backgroundColor = "#b03060";
+        }, i * 10);
+      } else {
+        if (i - animations.length > 0) {
+          flag = 1;
+          const x = path[i - animations.length][0];
+          const y = path[i - animations.length][1];
+          const s = "i=" + x.toString() + "j=" + y.toString();
+          const el = document.getElementById(s).style;
+          setTimeout(() => {
+            el.backgroundColor = "#ff4500";
+          }, i * 10);
+        }
+      }
+    }
+    if (flag == 0) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Path Found',
+          text: '',
+          footer: ''
+        })
+      }, i * 10);
+    }
+  }
 }
