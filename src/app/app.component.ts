@@ -28,7 +28,7 @@ export class AppComponent {
 
   ngOnInit() {
     if (window.matchMedia("(max-width: 480px)").matches) {
-      this.row = 13;
+      this.row = 12;
       this.col = 13;
       //this.speed=4;
     } else {
