@@ -29,9 +29,9 @@ function Dijsktra(row, column, node, visited, finish, animation, path, dist, w) 
         // console.log("QUEUE:",q
         var idx = minDist(dist,s)
         node = s.splice(idx,1)[0]
-        //if(!(node.toString() in w)){
+        if(!(node.toString() in w)){
             animation.push(node);
-        //}
+        }
         
         //console.log(visited)
         if (node == undefined) {

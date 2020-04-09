@@ -93,14 +93,31 @@ export class AppComponent {
     this.mousedown = true
   }
   mouse(obj) {
+    function isEqual(finish, node) {
+      for (var i = 0; i < finish.length; i++) {
+        if (finish[i] != node[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
     if (this.mousedown && this.wallButton) {
+      for (var i = 0; i < this.weight.length; i++) {
+        if (isEqual(this.weight[i], [parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])) {
+          this.weight.splice(i, 1)
+        }
+      }
       document.getElementById(obj.target.id).style.backgroundColor = "black"
       this.wall.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
     } else if (this.mousedown && this.weightButton) {
-      document.getElementById(obj.target.id).style.backgroundColor = "#80c5de"
-      this.weight.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+      for (var i = 0; i < this.wall.length; i++) {
+        if (isEqual(this.wall[i], [parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])) {
+          this.wall.splice(i, 1)
+        }
+        document.getElementById(obj.target.id).style.backgroundColor = "#80c5de"
+        this.weight.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
+      }
     }
-
   }
   mouseUP() {
     this.mousedown = false
@@ -139,11 +156,21 @@ export class AppComponent {
       document.getElementById(this.finish).style.backgroundColor = "red"
     } else if (this.wallButton) {
       if (this.start != obj.target.id && this.finish != obj.target.id) {
+        for (var i = 0; i < this.weight.length; i++) {
+          if (isEqual(this.weight[i], [parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])) {
+            this.weight.splice(i, 1)
+          }
+        }
         document.getElementById(obj.target.id).style.backgroundColor = "black"
         this.wall.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
       }
     } else if (this.weightButton) {
       if (this.start != obj.target.id && this.finish != obj.target.id) {
+        for (var i = 0; i < this.wall.length; i++) {
+          if (isEqual(this.wall[i], [parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])) {
+            this.wall.splice(i, 1)
+          }
+        }
         document.getElementById(obj.target.id).style.backgroundColor = "#80c5de"
         this.weight.push([parseInt(obj.target.id.split(/([0-9]+)/)[1]), parseInt(obj.target.id.split(/([0-9]+)/)[3])])
       }
@@ -176,7 +203,7 @@ export class AppComponent {
         const el = document.getElementById(s).style;
         setTimeout(() => {
           el.backgroundColor = "#b03060";
-        }, i * 10);
+        }, i * 20);
       } else {
         if (i - animations.length > 0) {
           flag = 1;
@@ -185,8 +212,8 @@ export class AppComponent {
           const s = "i=" + x.toString() + "j=" + y.toString();
           const el = document.getElementById(s).style;
           setTimeout(() => {
-            el.backgroundColor = "#ff4500";
-          }, i * 10);
+            el.backgroundColor = "yellow";
+          }, i * 20);
         }
       }
     }
@@ -198,7 +225,7 @@ export class AppComponent {
           text: '',
           footer: ''
         })
-      }, i * 10);
+      }, i * 20);
     }
   }
 
@@ -237,7 +264,7 @@ export class AppComponent {
           const s = "i=" + x.toString() + "j=" + y.toString();
           const el = document.getElementById(s).style;
           setTimeout(() => {
-            el.backgroundColor = "#ff4500";
+            el.backgroundColor = "yellow";
           }, i * 10);
         }
       }
@@ -255,6 +282,10 @@ export class AppComponent {
   }
 
   DFS() {
+    for (var i = 0; i < this.weight.length; i++) {
+      document.getElementById("i=" + this.weight[i][0].toString() + "j=" + this.weight[i][1].toString()).style.backgroundColor = "white";
+    }
+    this.weight = [];
     var temp = (this.start.split(/([0-9]+)/))
     var temp2 = this.finish.split(/([0-9]+)/)
     if (temp.length == 1 || temp2.length == 1) {
@@ -289,7 +320,7 @@ export class AppComponent {
           const s = "i=" + x.toString() + "j=" + y.toString();
           const el = document.getElementById(s).style;
           setTimeout(() => {
-            el.backgroundColor = "#ff4500";
+            el.backgroundColor = "yellow";
           }, i * 10);
         }
       }
@@ -321,6 +352,10 @@ export class AppComponent {
   }
 
   BFS() {
+    for (var i = 0; i < this.weight.length; i++) {
+      document.getElementById("i=" + this.weight[i][0].toString() + "j=" + this.weight[i][1].toString()).style.backgroundColor = "white";
+    }
+    this.weight = [];
     var temp = (this.start.split(/([0-9]+)/))
     var temp2 = this.finish.split(/([0-9]+)/)
     if (temp.length == 1 || temp2.length == 1) {
@@ -356,7 +391,7 @@ export class AppComponent {
           const s = "i=" + x.toString() + "j=" + y.toString();
           const el = document.getElementById(s).style;
           setTimeout(() => {
-            el.backgroundColor = "#ff4500";
+            el.backgroundColor = "yellow";
           }, i * 10);
         }
       }
